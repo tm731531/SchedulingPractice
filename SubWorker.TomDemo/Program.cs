@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
 
 namespace SubWorker.TomDemo
 {
@@ -6,7 +8,17 @@ namespace SubWorker.TomDemo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var host = new HostBuilder()
+                   .ConfigureServices((context, services) =>
+                   {
+                    services.AddHostedService<TomSubWorkerBackgroundService>();
+                   })
+                   .Build();
+            using (host)
+            {
+                host.Start();
+                host.WaitForShutdown();
+            }
         }
     }
 }
